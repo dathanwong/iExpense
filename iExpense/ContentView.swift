@@ -17,13 +17,7 @@ struct ContentView: View {
             List{
                 ForEach(expenses.items) { item in
                     HStack{
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
-                        }
-                        Spacer()
-                        Text("$\(item.amount)")
+                        ExpenseView(item: item, expenses: self.expenses)
                     }
                 }
             .onDelete(perform: removeItems)
@@ -72,6 +66,64 @@ class Expenses: ObservableObject{
             }
         }
         self.items = []
+    }
+    
+    func find(_ item: ExpenseItem) -> Int?{
+        for i in 0..<items.count{
+            if(item.id == items[i].id){
+                return i
+            }
+        }
+        return nil
+    }
+}
+
+struct ExpenseView: View{
+    @State var item: ExpenseItem
+    @State var expenses: Expenses
+    
+    var body: some View{
+        HStack{
+            VStack(alignment: .leading) {
+                Text(item.name)
+                    .font(.headline)
+                Text(item.type)
+            }
+            Spacer()
+            if(item.amount < 10){
+                Text("$\(item.amount)").modifier(Under10())
+            }else if(item.amount < 100){
+                Text("$\(item.amount)").modifier(Under100())
+            }else{
+                Text("$\(item.amount)").modifier(Over100())
+            }
+            Button(action: {
+                if let index = self.expenses.find(self.item){
+                    self.expenses.items.remove(at: index)
+                }
+            }) {
+                Text("Done")
+                    .foregroundColor(.red)
+            }
+        }
+    }
+}
+
+struct Under10: ViewModifier{
+    func body(content: Content) -> some View {
+        content.foregroundColor(.yellow)
+    }
+}
+
+struct Under100: ViewModifier{
+    func body(content: Content) -> some View {
+        content.foregroundColor(.black)
+    }
+}
+
+struct Over100: ViewModifier{
+    func body(content: Content) -> some View {
+        content.foregroundColor(.green)
     }
 }
 

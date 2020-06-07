@@ -14,6 +14,7 @@ struct AddView: View {
     @State private var type = "Personal"
     @State private var amount = ""
     @ObservedObject var expenses: Expenses
+    @State private var showAlert = false
     static let types = ["Business", "Personal"]
     
     var body: some View {
@@ -28,14 +29,19 @@ struct AddView: View {
                 TextField("Amount", text: $amount)
                     .keyboardType(.numberPad)
             }
-        .navigationBarTitle("Add new expense")
+            .navigationBarTitle("Add new expense")
             .navigationBarItems(trailing: Button("Save"){
-                if let actualAmount = Int(self.amount){
+                if let actualAmount = Double(self.amount){
                     let item = ExpenseItem(name: self.name, type: self.type, amount: actualAmount)
                     self.expenses.items.append(item)
                     self.presentationMode.wrappedValue.dismiss()
+                }else{
+                    self.showAlert = true
                 }
             })
+            .alert(isPresented: self.$showAlert){
+                Alert(title: Text("Invalid cost, must be a number"))
+            }
         }
     }
 }

@@ -24,11 +24,15 @@ struct ContentView: View {
             }
             .navigationBarTitle("iExpense")
             .navigationBarItems(trailing:
-                Button(action:{
-                    self.showingAddExpense = true
-                }){
-                    Image(systemName: "plus")
+                HStack{
+                    Button(action:{
+                       self.showingAddExpense = true
+                    }){
+                       Image(systemName: "plus")
+                    }
+                    EditButton()
                 }
+               
             ).sheet(isPresented: $showingAddExpense) {
                 AddView(expenses: self.expenses)
             }
@@ -97,14 +101,14 @@ struct ExpenseView: View{
             }else{
                 Text("$\(item.amount)").modifier(Over100())
             }
-            Button(action: {
-                if let index = self.expenses.find(self.item){
-                    self.expenses.items.remove(at: index)
-                }
-            }) {
-                Text("Done")
-                    .foregroundColor(.red)
-            }
+//            Button(action: {
+//                if let index = self.expenses.find(self.item){
+//                    self.expenses.items.remove(at: index)
+//                }
+//            }) {
+//                Text("Done")
+//                    .foregroundColor(.red)
+//            }
         }
     }
 }
